@@ -1,0 +1,105 @@
+---copying to new table
+/****** Script for SelectTopNRows command from SSMS  ******/
+SELECT TOP 1000 [status]
+      ,[error]
+      ,[topup_process_id]
+      ,[login]
+      ,[coin_serial]
+      ,[pan]
+      ,[rrn]
+      ,[provider_name]
+      ,[data]
+      ,[amount]
+	  into sdkRnnZero
+  FROM [dekabr2020].[dbo].[sdk_topup]
+  where rrn is null or LEN(rrn)<12
+
+
+--full join with sdk and milli kart topup
+select coalesce(Cast(TR_DATE as datetime),Cast([data] as datetime)),
+pan,rrn, sdk_r.[data], amount,
+--sum(amount_to_send) as sum_sdk, 
+[card], TR_DATE, AMNT,milli.REF_NR 
+--sum(AMNT) as sum_milli
+from sdk_topup as sdk_r 
+full join Millikart_topup milli on milli.REF_NR=sdk_r.rrn 
+where milli.ABRV_NAME='em-eMan+medaxil'
+order by coalesce(Cast(TR_DATE as datetime),Cast([data] as datetime))
+
+
+--milli kart top-up ile sdk arasindaki ferqli rrn-ler
+
+SELECT TOP 1000 [NN]
+      ,[CARD]
+      ,[ABRV_NAME]
+      ,[MERCHANT]
+      ,[TR_DATE]
+      ,[REF_NR]
+      ,[REG_DATE]
+      ,[MCC]
+      ,[AMNT]
+      ,[TRANS_FEE]
+      ,[TR_CCY]
+      ,[FLD_098]
+      ,[FLD_104]
+	  into [dekabr2020].[dbo].[millikartferq]
+  FROM [dekabr2020].[dbo].[Millikart_topup] where REF_NR in ( 
+'033411108359',
+'033512268437',
+'033512270115',
+'033513284939',
+'033513285446',
+'033513285446')
+
+
+--tarixe gore axtaris
+SELECT COUNT([REF_NR]) ,[REF_NR],[rrn],CONVERT(DATETIME, [TR_DATE], 103) ,[AMNT], CONVERT(DATETIME, fmp.[data], 103) ,[amount_to_send]
+FROM [dbo].[Millikart_1-18] fm
+left join [dbo].[sdk_topupRRN] fmp
+on fm.[AMNT] = fmp.[amount_to_send]*1.00 
+
+and CONVERT(DATETIME, fmp.[data], 103) between DATEADD(SECOND,-360,CONVERT(DATETIME, [TR_DATE], 103) )
+and DATEADD(SECOND,180,CONVERT(DATETIME, [TR_DATE], 103) )
+--where fmp.[data] is not null
+group by CONVERT(DATETIME, [TR_DATE], 103),[AMNT], CONVERT(DATETIME, fmp.[data], 103) ,[amount_to_send],[REF_NR],[rrn]
+order by CONVERT(DATETIME, [TR_DATE], 103)
+
+
+----------------------------
+SELECT COUNT([REF_NR]) as counts ,[REF_NR],[rrn],[TR_DATE] ,[row_num],[AMNT], fmp.data ,amount
+--into [dbo].donthaveRRN
+FROM [dbo].[millikartferq] fm
+inner join  [dbo].[sdk_topupRRNZero]  fmp
+on fm.[AMNT] = fmp.amount*1.00 
+
+and fmp.data between DATEADD(SECOND,-5000,TR_DATE)
+and DATEADD(SECOND,-100, [TR_DATE])
+
+group by[TR_DATE],[AMNT],  fmp.data ,[row_num],amount,[REF_NR],[rrn]
+order by  [TR_DATE]
+-----------------------------------
+
+
+
+tarixe gore classification
+SELECT COUNT([REF_NR]) ,[REF_NR],[rrn],[TR_DATE] ,rownum,[AMNT], fmp.[sdk_date] ,amount
+FROM [dbo].[millikartferq] fm
+ join [dbo].[sdkTopupRRNzeroyeni] fmp
+on fm.[AMNT] = fmp.amount*1.00 
+
+and fmp.[sdk_date] between DATEADD(SECOND,-15000,TR_DATE)
+and DATEADD(SECOND,-12680, [TR_DATE])
+
+group by[TR_DATE],[AMNT],  fmp.[sdk_date] ,rownum,amount,[REF_NR],[rrn]
+order by  [TR_DATE]
+
+
+----------------------------------------------------------
+select pan,rrn,[data],amount,[card],REF_NR,TR_DATE,AMNT
+from sdk_topup as sdk
+FULL join Millikart_topup milli on milli.REF_NR=sdk.RRN
+where (rrn is null  and TR_DATE>'2020-12-01' )--or
+ --AMNT<0 
+--where  REF_NR in ('033716823446','034109568171','034916198577','033411108359','033513285446')
+order by coalesce(Cast(TR_DATE as datetime),Cast([data] as datetime))
+---------------------------------------------------------

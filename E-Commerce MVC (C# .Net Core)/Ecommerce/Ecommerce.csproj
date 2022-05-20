@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>Parviz_Web_app</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\background\" />
+    <Folder Include="wwwroot\uploads\about\" />
+    <Folder Include="wwwroot\uploads\activityofmonth\" />
+    <Folder Include="wwwroot\uploads\instagram\" />
+    <Folder Include="wwwroot\uploads\facebook\" />
+    <Folder Include="wwwroot\uploads\twitter\" />
+    <Folder Include="wwwroot\uploads\people\" />
+    <Folder Include="wwwroot\uploads\tattoo\" />
+    <Folder Include="wwwroot\uploads\recentwork\" />
+  </ItemGroup>
+
+</Project>

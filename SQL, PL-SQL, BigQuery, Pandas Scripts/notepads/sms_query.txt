@@ -1,0 +1,7 @@
+  SELECT b.*,m.*
+  FROM [ziyarat_test].[dbo].[bakcell_atl] b
+  full Join [ziyarat_test].[dbo].[modenis_bakcell] m  on b.nomre= m.number 
+  and m.insertDate 
+  between DATEADD(minute,-10,CONVERT(DATETIME, b.[Done Date ], 103) )  and DATEADD(minute,10,CONVERT(DATETIME, b.[Done Date ], 103) )
+  where b.nomre is null or m.number is null
+  order by 1

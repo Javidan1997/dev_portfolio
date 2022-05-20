@@ -1,0 +1,17 @@
+﻿@model Category
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Areas/Manage/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Ad: @Model.Name</h5>
+        </div>
+    </div>
+    <form method="post" asp-action="deletepost">
+        <input name="id" value="@Model.Id" hidden />
+        <button type="submit" class="btn btn-danger"> Delete</button>
+    </form>
+</div>

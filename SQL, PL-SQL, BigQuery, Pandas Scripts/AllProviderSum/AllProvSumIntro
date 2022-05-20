@@ -1,0 +1,29 @@
+1. Extract data from ModDevUPG with querry from - http://10.203.180.46/Task/TaskTypes/Info/5/ - gatePaymentsQuerry and add Declare
+
+Declare @DateFrom date
+Declare @DateTo date
+set @DateFrom = '2021-03-01'
+set @DateTo = '2021-04-01'
+
+2. Replace data of Agent (17-18)
+
+3. Extract data of Agent (17-18) from ModDevUPG
+
+https://github.com/elvinaqa/eManat-SQL/blob/main/AllProviderSum/UPG_Payment_17_18.sql
+
+3. Extract AllProviderSum from SDK - https://github.com/elvinaqa/eManat-SQL/blob/main/AllProviderSum/Sdk_success_4244_45.sql
+
+4. Compare SDK vs Gate211 (17-18)
+
+5. Send compare report to Elvin Amrahli
+
+6.Pivot
+
+7. add Kartdan balansin artirilmasi to table. SELECT public.get_report_by_services('2021-10-01','2021-10-31');
+
+8. Add amounts from Elvin Amrahlis report
+
+NOTE:
+1. Check if amount = provideramount + CardCommission + PurchaseComission + OtherComission
+2. CardComission = ChargeComisson
+3. Check Elvin Amrali's feedback if deducted amount = normal amount

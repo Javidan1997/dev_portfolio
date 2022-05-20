@@ -1,0 +1,66 @@
+1. Find which terminal is out of paper and when is it filled  
+
+
+Select a.PointId, a.begindate, a.enddate, b.CashoutDate, b.countcashout
+from
+(SELECT [PointID]
+, Count(*) count
+,MIN(LAstUpdate) begindate
+, MAX(lastUpdate) enddate
+  FROM [Main].[dbo].[TerminalHistory]
+  where PrinterErrorID=1 and LastUpdate > '2021-10-26' and LastUpdate < '2021-10-27'
+  group by PointID) a
+  left join  
+(Select c.PointId,
+COUNT(cashoutdate) countcashout,
+min(cashoutdate) CashoutDate
+from [Main].[dbo].[TerminalCashOut] c
+where  CashOutDate > '2021-10-26' and CashOutDate < '2021-10-27' 
+  group by c.PointID) b
+  on a.PointID = b.PointID
+  group by a.PointId, a.begindate, a.enddate, b.CashoutDate, b.countcashout
+
+
+[PrinterErrorID]
+
+2 - Принтер: Бумага зажевана 
+
+1 - Принтер: Закончилась бумага 
+
+3 - Принтер: Ошибка связи с принтером 
+
+213 - Принтер: Принтер не найден 
+
+SELECT [PointID]
+, Count(*) count
+,MIN(LAstUpdate) mindate
+, MAX(lastUpdate) maxdate
+  FROM [Main].[dbo].[TerminalHistory]
+  where PrinterErrorID=1
+  group by PointID
+
+
+
+SELECT TOP (1000) [CashOutID]
+      ,[PointID]
+      ,[CashOutDate]
+      ,[CashOutUnitsCount]
+      ,[CashOutUnitsSum]
+      ,[CashOutType]
+  FROM [Main].[dbo].[TerminalCashOut]
+
+
+
+which terminals printer didn't filled
+
+ SELECT h.[PointID]
+, Count(*) count
+,MIN(lastUpdate) mindate
+, MAX(lastUpdate) maxdate
+, max(CashOutDate) maxcashoutdate
+  FROM [Main].[dbo].[TerminalHistory] h
+   join [Main].[dbo].[TerminalCashOut] t
+  on h.PointID = t.PointID
+  where PrinterErrorID=1 
+  group by h.PointID,CashOutDate
+  having MIN(LAstUpdate)<max(CashOutDate) and max(CashOutDate)<DATEADD (mi,10,min(LastUpdate)) and min(lastupdate) < MAX (LastUpdate)

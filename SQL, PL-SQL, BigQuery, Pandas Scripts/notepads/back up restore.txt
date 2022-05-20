@@ -1,0 +1,21 @@
+Back up restore-nin alinmasi
+step 1: gate211 silinir
+Step 2: Remote desktopdan MODDEVUPG servere  Window Authorization ile (MODENIS.local/mahmudzadaz)qosuluruq.
+step 2: File directory-de \\10.203.180.32 yazaraq GATE_DB_BACK_UP foldere daxil olub sonuncu BACK file-dan novbeti ayin 12:00 -01:00 a.m -e qeder back-up file-lari copy edirik.
+step 3. Bəzən bu servere \\10.203.180.32 daxil olmaq ucun login isteyir.
+Bu zaman 
+		user: AZ\z.mahmudzada
+		password: W6dXKJY0
+
+                AZ\c.abdullayev
+                lbfTylZ2
+
+login olunur.
+step 4. Computer\Data-2(F:)\gate step2deki back up file-lari copy paste edirik. 
+step 5. Start/MS SQL / MODDEVUPG/ database/restore database/
+step 6. Restore window-da device radiobutton secilir ve 3noqte clicklenir. ADD ve back-up file-leri hansi foldere copy-paste etdikse onu secirik meselen burada F\gate folderi secirik.
+step 7. Restore window-da General/Destination/Database name gate211 rename edirik.
+step 8. Restore window-da Generalin altinda Files section secilir. Burada .mdf ve .ndf file-lari daha cox bosh yeri olan F\db folder secilmekle file_name hissesinde ise secilmish file-a uygun meselen gate2.mdf ve gate2.ndf yaziriq
+step 9. Restore window-da Generalin altinda Files section secilir. Burada .ldf ve .ldf file-lari daha az bosh yeri olan E\log folder secilmekle file_name hissesinde ise secilmish file-a uygun meselen gate_log.ldf ve gate_log.ldf yaziriq.
+step10. Daha sonra ok ve restore baslanilir.
+  

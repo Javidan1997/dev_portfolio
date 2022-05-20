@@ -1,0 +1,9 @@
+SELECT s.[ServiceName] ,
+StatusDate, [Number],[AgentTerminalID],[PaySum] ,
+	  CAST([ExtraParams].query('data(r/sessionid)') as nvarchar) as sessionid
+	  into [7july2021_recon].dbo.RabiteBank
+  FROM [gate211].[dbo].[Payment] p 
+  JOIN [gate211].[dbo].[Service] s ON s.ServiceID=p.ServiceID
+join [gate211].[dbo].Provider pp on pp.ProviderID=s.ProviderID
+and StatusDate between '2021-07-01' and '2021-08-01' and pp.ProviderID=63
+ and CAST([ExtraParams].query('data(r/agt_id)') as nvarchar) <> '3'

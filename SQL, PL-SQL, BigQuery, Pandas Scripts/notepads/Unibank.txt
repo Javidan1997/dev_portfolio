@@ -1,0 +1,11 @@
+ select  s.servicename, CAST([PaymentInfo].query('data(r/sessionid)') as nvarchar) as sessionid
+, CAST([ExtraParams].query('data(r/accunibank)') as nvarchar) asaccunibank
+ ,Number as PinCode, 
+--CAST([PaymentInfo].query('data(r/aggreno)') as nvarchar) as Aggreno,
+ PaySum, CONVERT(VARCHAR(19), StatusDate, 120) DateTime
+  INTO [5may2021_recon].[dbo].UnibankAll
+ 		  from gate211.dbo.Payment p with(nolock)
+		  join gate211.dbo.Service s on p.ServiceID=s.ServiceID where s.[ProviderID]=101
+		 
+and StatusDate between '2021-05-01' and '2021-06-01'
+ and Status=2

@@ -1,0 +1,25 @@
+version: '3'
+services:
+ app1:
+  container_name: app1
+  restart: always
+  command: streamlit run app1.py
+  build: ./app1
+  ports:
+  - "8502:8502"
+ app2:
+  container_name: app2
+  restart: always
+  command: streamlit run app2.py
+  build: ./app2
+  ports:
+  - "8503:8503"
+ nginx:
+  container_name: nginx
+  restart: always
+  build: ./nginx
+  ports:
+  - "8080:80"
+  depends_on:
+   - app1
+   - app2

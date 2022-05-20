@@ -1,0 +1,25 @@
+Select dp.id_service,Name, PayCount,PayAmount,COALESCE(RejectAmount,0.00) RejectAmount, COALESCE(RejectCount,0.00) RejectCount 
+from 
+(select m.id_service,
+s."name" as Name
+	 ,Count(*)
+ PayCount
+      ,SUM(m.sum_income)/100 as PayAmount	 
+  FROM operations.master m 
+  join public.services s on m.id_service = s.id_service 
+  where (m.time_point BETWEEN '2021-09-23 09:00:00' AND '2021-09-23 10:00:00')
+  and m.state = 60 --m.substate=0
+  and m.id_point != 8
+  GROUP BY m.id_service, s."name") dp
+  LEFT JOIN 
+  (select m.id_service
+  ,SUM(m.sum_income)/100 as RejectAmount
+     ,Count(*)
+ RejectCount
+  FROM operations.master m 
+  where (m.time_point BETWEEN '2021-09-23 09:00:00' AND '2021-09-23 10:00:00')
+  and m.state = 80  --m.substate=1
+  and m.id_point != 8
+  GROUP BY  m.id_service
+  ) rp ON dp.id_service=rp.id_service
+  order by dp.id_service

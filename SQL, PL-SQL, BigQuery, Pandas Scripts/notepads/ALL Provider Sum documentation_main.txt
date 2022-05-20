@@ -1,0 +1,226 @@
+ALLproviderSUM documentation
+Step 1.		Task Service/ Dictionaries 1C DailyReport-den sorgu goturulur ve MS SQL-de execute olunur. Sorgunun neticesi Excel-e export olunur. Agent17 ve Agent18 ise daha sonra ayrica baxilir.
+Step 2.		Agent17 ve Agent18 ucun github-dan asagidaki sorgu goturulur ve MS SQL-de icra olunur. 18 reqemi 17 ile evez olunuraq Agent18 ucun datalara cekmish olur.
+					select 	CAST([ExtraParams].query('data(r/trm_prv_id)') as  nvarchar(max) ) TRN,
+					*
+					into [ziyarat_test].dbo.Payment18
+					from gate211.dbo.Payment p
+
+					where  (StatusDate between '2021-02-01' and '2021-03-01' )
+					   and CAST([ExtraParams].query('data(r/agt_id)') as nvarchar) = '18'
+Step 3. Agent17 ve Agent18 ucun pgAdmin platformasindasindan istifade ederek asagidaki sorgu icra olunur. Condition part-da where "Agent"='18'  yazaraq Agent18 ucun neticeleri elde etmish olariq.  
+						--Get Report Success
+						select "P_ID","ID","Service Name", "Amount", "Description", "Agent", "ChargeCommission", "PurchaseCommission", "OtherCommissions"  from (
+
+						with commissions as 
+							(			
+										select cms.* from (select cm."Id",cm."Action",coalesce(cm."ChargeCommission",0) "ChargeCommission",coalesce(cm."PurchaseCommission",0) "PurchaseCommission",0 "OtherCommissions"
+										from crosstab( 'select coalesce (tbb.parent_id,tbb.id) id_or_parentid,tbb.creationaction_id, tbb.type, coalesce(tbg.commission,0) from tx_business_gate tbg 
+											left join tx_business_base tbb ON tbg.id=tbb.id
+											left join tx_business_base_def tbbd on tbb.def_id =tbbd.id 
+											where tbbd.status=''processed''
+											order by 1,2'
+													,$$VALUES ('gate_charge'::text), ('gate_purchase'::text) $$) 
+										as cm ("Id" text, "Action" text,"ChargeCommission" numeric, "PurchaseCommission" numeric)
+										union
+										select  tbb.id "Id",tbb.creationaction_id "Action",0 "ChargeCommission",0 "PurchaseCommission",coalesce(commission,0) "OtherCommissions"
+											from tx_business_base tbb 
+											left join tx_business_base_def tbbd on tbb.def_id =tbbd.id  
+											left join tx_business_gate tbg on tbb.id=tbg.id 
+											where tbb.type not in ('gate_purchase_via_gate','gate_charge','gate_purchase') and tbbd.status ='processed') cms
+										
+										left join history_action ha on ha.id=cms."Action"
+										where ha.performedat >='2021-02-01' and ha.performedat <'2021-03-01'
+							)
+							,product_purchases as ( 
+									select
+										 gpp.tx_id,
+										 gpd.id prdef_id,
+										 gp.external_id, 
+										 egpd.emanat_details::json -> 'details'  ->> 'lName' display_name,
+										 egpd.emanat_details::json -> 'details'  ->> 'sName' description
+										 from gate_product_purchase gpp 
+										 left join gate_product_def gpd on gpp.product_id =gpd.id 
+										 inner join gate_product gp on gpd.product_id =gp.id 
+										 inner join emanat_gate_product egp on gp.external_id =egp.external_id 
+										 inner join emanat_gate_product_def egpd on egp.def_id =egpd.id 
+							)
+							select gtd.external_id "P_ID",pp.external_id::text  "ID",pp.display_name "Service Name",pp.description "Description",tbb.id "Process ID", gtd.amount_to_send "Amount", t."ChargeCommission",t."PurchaseCommission",t."OtherCommissions",gtd.amount_to_send+t."ChargeCommission"+t."PurchaseCommission" "Total",'17' "Agent" from commissions t 
+								inner join tx_business_base tbb on tbb.parent_id =t."Id" and tbb."type" ='gate_purchase'
+								left join tx_business_base_def tbbd on tbb.def_id =tbbd.id
+								inner join gate_tx gt on gt.process_id =tbb.id
+								inner join gate_tx_def gtd on gt.def_id =gtd.id
+								left join product_purchases pp on gt.id=pp.tx_id
+								where  gtd.status='SUCCESS'
+							union 
+							select gtd.external_id "P_ID",pp.external_id::text  "ID",pp.display_name "Service Name",pp.description "Description",tbb.id "Process ID", gtd.amount_to_send "Amount", t."ChargeCommission",t."PurchaseCommission",t."OtherCommissions",gtd.amount_to_send+t."ChargeCommission"+t."PurchaseCommission" "Total",'18' "Agent" from commissions t 
+								inner join tx_business_base tbb on tbb.id =t."Id" and tbb."type" ='gate_purchase'
+								left join tx_business_base_def tbbd on tbb.def_id =tbbd.id
+								inner join gate_tx gt on gt.process_id =tbb.id
+								inner join gate_tx_def gtd on gt.def_id =gtd.id
+								left join product_purchases pp on gt.id=pp.tx_id
+								where  gtd.status='SUCCESS'
+						) a
+						where "Agent"='18'
+						--"Service Name" = 'Bakcell' and
+						--group by "Agent","ID","Service Name", "Description"
+						--order by "Description
+						
+Step 4.sdk17 ve agent17 daha sonra join edilir ve comission da cixarilir. sdk18 ve agent18 daha sonra join edilir ve comission da cixarilir. 
+Step 5. MS SQL-de yeni yaradilmish Payment17 ile sdk_17 table-lari asagidaki sorgu ile full join edilir
+			select TRN,P_id,* from [ziyarat_test].dbo.Payment17 p
+			full join [ziyarat_test].[dbo].[sdk_17$] s on p.TRN=s.P_id
+			where P_id is null or TRN is null
+Note : Tereflerden her hansi biri null olarsa hemin odenisler legv olunur ve ALLproviderSUM-dan muvafiq section-dan cixilir. 
+Step 5. Asagidaki 1C ƏMDK DƏDRX sorgusu icra olunur. Sorgu UPG-de Dictionaries/ Task Types/  1C ƏMDK DƏDRX elde edilmisdir 
+		DECLARE @DateFrom DATETIME
+		DECLARE @DateTo DATETIME
+
+		SET @DateFrom='2021-02-01'
+
+		SET @DateTo='2021-03-01'
+
+		SELECT id,serviceName,SUM(PaySum) as Amount,SUM(ProviderSum) as ProviderAmount,
+		SUM(Comission) as ComissionAmount,0.00 as CardComissionAmount, Count(*) as Count,
+		Agent,ProviderName 
+		into [ziyarat_test].dbo.emdk75
+		 FROM
+		(SELECT 
+		CAST([PaymentInfo].query('data(r/id)') as nvarchar) as id,
+		CAST([PaymentInfo].query('data(r/serviceName)') as nvarchar(MAX)) as serviceName,
+		PaySum,
+		[ProviderSum] - CAST(CAST(PaymentInfo.query('data(r/overpaid)') as nvarchar) as decimal(7,2)) as ProviderSum
+		 ,([CommissionSum] + CAST(CAST(PaymentInfo.query('data(r/overpaid)') as nvarchar) as decimal(7,2))) as Comission,
+		CAST([ExtraParams].query('data(r/agt_id)') as nvarchar) as Agent
+		,pp.ProviderName
+		FROM
+
+		[gate211].[dbo].[Payment] p with (nolock) join [gate211].[dbo].[Service] s on p.ServiceID=s.ServiceID join [gate211].[dbo].Provider pp on s.ProviderID=pp.ProviderID
+		WHERE  (StatusDate BETWEEN @DateFrom and @DateTo
+		and CAST([ExtraParams].query('data(r/agt_id)') as nvarchar) not in ( '3','10','14')
+		) 
+		and Status=2
+		and p.ServiceID  in (254,255)
+		)t GROUP BY id,serviceName,Agent,ProviderName
+		--HAVING Agent>3
+
+Step 6. 1C ƏMDK DƏDRX Extra sorgusu icra olunur. Sorgu UPG-de Dictionaries/ Task Types/  1C ƏMDK DƏDRX elde edilmisdir
+		DECLARE @DateFrom DATETIME
+		DECLARE @DateTo DATETIME
+
+		SET @DateFrom='2021-02-01'
+
+		SET @DateTo='2021-03-01'
+
+		select -- XH digər xidmətlər
+		id, 
+		serviceName as ServiceName,SUM(PaySum) Amount,SUM(ProviderSum) ProviderAmount,SUM(CommissionSum) CommissionAmount,0.00 as CardCommissionAmount,
+		count(*) Count, Agent,t.ProviderName 
+		into [ziyarat_test].dbo.emdk76
+		FROM
+		( SELECT 
+		CAST([PaymentInfo].query('data(r/id)') as nvarchar) as id,pp.ProviderName, 
+		CAST([PaymentInfo].query('data(r/serviceName)') as nvarchar(MAX)) as serviceName,
+
+			PaySum,ProviderSum,CommissionSum, CAST([ExtraParams].query('data(r/agt_id)') as nvarchar) as Agent
+		FROM [gate211].[dbo].[Payment] p with (nolock)
+		join [gate211].[dbo].[Service] s on p.ServiceID=s.ServiceID join [gate211].[dbo].Provider pp on s.ProviderID=pp.ProviderID
+		WHERE  (StatusDate BETWEEN @DateFrom and @DateTo and CAST([ExtraParams].query('data(r/agt_id)') as nvarchar) not in ( '3','10','14')
+		) 
+		and Status=2
+
+		and p.ServiceID in (257,258,259,260,261,262,263,264)
+		) t GROUP BY id , ServiceName,  Agent,t.ProviderName
+		HAVING Agent<>3 
+
+Step 7. Emdk75 ve Emdk76 table-lari union all edilir ve daha sonra AllProviderSum-a elave edilir. 
+
+
+
+Note : payment17 ve sdk17 arasindaki ferqi tapdiqdan sonra asagidaki sorgudan istifade etmekle statusu 3 olan ugursuz odenislerin arasinda tapa bilersiniz
+USE [Main]
+GO
+
+-- TODO: Set parameter values here.
+
+EXECUTE [dbo].[GetNewPayment]
+@Login = N'mahmudzadaz'
+,@PasswordMD5 = N'gfgf'
+
+,@Status=3
+--,@RevokeStatus=4---,5
+--,@serviceid=1084---(1083,1084,1007,1119)
+,@CreateTimeFrom='2021-02-01'
+,@CreateTimeTo='2021-03-01'
+,@PointID=4245 --terminalid
+--,@Revoketimefrom='2021-02-01'
+--,@revoketimeTo='2021-03-01'
+
+GO
+
+---
+Step 8. Emdk75ve Emdk76 nin agent17 ve sonra da agent 18 ucun comissiya daxil olmaqla retrieve alinmasi
+		DECLARE @DateFrom DATETIME
+		DECLARE @DateTo DATETIME
+
+		SET @DateFrom='2021-02-01'
+
+		SET @DateTo='2021-03-01'
+
+		SELECT id,serviceName,SUM(PaySum) as Amount,SUM(ProviderSum) as ProviderAmount,
+		SUM(Comission) as ComissionAmount,0.00 as CardComissionAmount, Count(*) as Count,
+		Agent,ProviderName , sum([Amount])+ sum([Charge_Comission])+sum([Purchase_Comission]) Amount,
+		sum([Amount]) prv_amount,sum([Charge_Comission]) [Charge_Comission],sum([Purchase_Comission]) [Purchase_Comission]
+	--	into [ziyarat_test].dbo.emdk75
+		 FROM
+		(SELECT 
+		CAST([PaymentInfo].query('data(r/id)') as nvarchar) as id,
+		CAST([PaymentInfo].query('data(r/serviceName)') as nvarchar(MAX)) as serviceName,
+		PaySum,Amount,[Charge_Comission],[Purchase_Comission],
+		[ProviderSum] - CAST(CAST(PaymentInfo.query('data(r/overpaid)') as nvarchar) as decimal(7,2)) as ProviderSum
+		 ,([CommissionSum] + CAST(CAST(PaymentInfo.query('data(r/overpaid)') as nvarchar) as decimal(7,2))) as Comission,
+		CAST([ExtraParams].query('data(r/agt_id)') as nvarchar) as Agent
+		,pp.ProviderName
+		FROM
+
+		[ziyarat_test].[dbo].[Payment18] p with (nolock)
+	    join [gate211].[dbo].[Service] s on p.ServiceID=s.ServiceID join [gate211].[dbo].Provider pp on s.ProviderID=pp.ProviderID
+		join  [dbo].[sdk_18$] sd on p.TRN=sd.P_id
+		WHERE  (StatusDate BETWEEN @DateFrom and @DateTo
+		and CAST([ExtraParams].query('data(r/agt_id)') as nvarchar) not in ( '3','10','14')
+		) 
+		and Status=2 --and TRN in (select p_id from [dbo].[sdk_17$])
+		and p.ServiceID  in (254,255) and P_id is not null and TRN is not null
+		)t GROUP BY id,serviceName,Agent,ProviderName
+		--HAVING Agent>3
+
+		union all 
+	
+		select -- XH digər xidmətlər
+		id, 
+		serviceName as ServiceName,SUM(PaySum) Amount,SUM(ProviderSum) ProviderAmount,SUM(CommissionSum) CommissionAmount,0.00 as CardCommissionAmount,
+		count(*) Count, Agent,t.ProviderName , sum([Amount])+ sum([Charge_Comission])+sum([Purchase_Comission]) Amount,
+		sum([Amount]) prv_amount,sum([Charge_Comission]) [Charge_Comission],sum([Purchase_Comission]) [Purchase_Comission]
+
+	--	into [ziyarat_test].dbo.emdk76
+		FROM
+		( SELECT 
+		CAST([PaymentInfo].query('data(r/id)') as nvarchar) as id,pp.ProviderName, 
+		CAST([PaymentInfo].query('data(r/serviceName)') as nvarchar(MAX)) as serviceName,
+		PaySum,Amount,[Charge_Comission],[Purchase_Comission],ProviderSum,CommissionSum, CAST([ExtraParams].query('data(r/agt_id)') as nvarchar) as Agent
+		FROM ziyarat_test.[dbo].[Payment18] p with (nolock)
+		join [gate211].[dbo].[Service] s on p.ServiceID=s.ServiceID join [gate211].[dbo].Provider pp on s.ProviderID=pp.ProviderID
+		join  ziyarat_test.[dbo].[sdk_18$] sdk on p.TRN=sdk.P_id
+		WHERE  (StatusDate BETWEEN @DateFrom and @DateTo and CAST([ExtraParams].query('data(r/agt_id)') as nvarchar) not in ( '3','10','14')
+		) 
+		and Status=2
+
+		and p.ServiceID in (257,258,259,260,261,262,263,264)
+		) t GROUP BY id , ServiceName,  Agent,t.ProviderName
+		HAVING Agent<>3 
+		
+	Step 9. Faberlik 20k azn -den cixilmasi
+	ilk once MODWSPRV-serverine daxil olunur ve orda FaberlicDebt db-ye daxil olub Payment cedvelinden selelct all  edib transaction_id-ye gore portalda axtarish edirik.
+	axtarish esnasinda agenti mueyyen edirik ve her agente gore toplam meblegi hesablayib AllProviderSum-da muvafiq agent-den cixiriq.
+
+	

@@ -1,0 +1,71 @@
+SELECT 
+case 
+when  s.id  in ('18193','18239','18200','18184','18184','18233','18185','18185')
+then s.id
+else '77777'
+end ID      
+      ,[service_name] as ServiceName
+	  ,SUM(s.[amount])+SUM(s.chargecommission) +SUM(s.purchasecommission) as Amount
+	  ,SUM(s.amount) as ProviderAmount
+      ,SUM(s.[purchasecommission]) as CommissionAmount
+	  ,SUM(s.[chargecommission]) as CardComission
+	  ,Count(s.p_id) as Count
+      ,[agent] as Agent
+      ,[description] as ProviderName
+     
+      
+  FROM [DWHTEST].[dbo].[sdk_provider_trnsaction] s
+  where s.p_date between '2021-12-01' and '2022-01-01'
+  group by s.id,s.description,s.service_name,s.agent
+
+  union all 
+
+SELECT '888888' as ID,'Kartdan balansın artırılması'  as ServiceName, s.[total] as Amount, s.[amount] as ProviderAmount,
+s.[purchascomission] as CommissionAmount, s.[chargecomission] as CardCommissionAmount, s.[count ] as Count,
+s.[agent] as Agent ,'Yığım (Mpay)'  as ProviderName  
+
+from [DWHTEST].[dbo].[sdk_report_by_services] s
+
+where s.id = 1018
+
+   union all
+
+SELECT '888888' as ID,'Mpay terminallarından balansın artırılması'  as ServiceName, a.Amount  as Amount, a.Amount as ProviderAmount,
+0.00 as CommissionAmount, 0.00 as CardCommissionAmount, a.Count  as Count,
+19 as Agent ,'Yığım (Mpay)'  as ProviderName  
+from
+(SELECT SUM(p.PaySum) as Amount, COUNT(p.PaymentID) as Count
+  FROM [DWHTEST].[dbo].[paymentupg] p
+  where ServiceID = 762 and StatusDate between '2021-12-01' and '2022-01-01'  and AgentTerminalID = 4702 and Status = 2
+  group by  p.AgentTerminalID) a
+
+union all
+
+SELECT '888888' as ID,'Modenis terminallarından balansın artırılması'  as ServiceName, 
+
+(SELECT  s.[total]
+from [DWHTEST].[dbo].[sdk_report_by_services] s
+where s.id = 1017) - (select SUM(p.PaySum)
+  FROM [DWHTEST].[dbo].[paymentupg] p
+  where ServiceID = 762 and StatusDate between '2021-12-01' and '2022-01-01'  and AgentTerminalID = 4702 and Status = 2
+  group by  p.AgentTerminalID) as Amount, 
+
+(SELECT  s.[total]
+from [DWHTEST].[dbo].[sdk_report_by_services] s
+where s.id = 1017) - (select SUM(p.PaySum)
+  FROM [DWHTEST].[dbo].[paymentupg] p
+  where ServiceID = 762 and StatusDate between '2021-12-01' and '2022-01-01'  and AgentTerminalID = 4702 and Status = 2
+  group by  p.AgentTerminalID)   as ProviderAmount,
+
+0.00 as CommissionAmount,
+0.00 as CardCommissionAmount, 
+
+(SELECT  s.COUNT
+from [DWHTEST].[dbo].[sdk_report_by_services] s
+where s.id = 1017) - (select COUNT(p.PaymentID)
+  FROM [DWHTEST].[dbo].[paymentupg] p
+  where ServiceID = 762 and StatusDate between '2021-12-01' and '2022-01-01'  and AgentTerminalID = 4702 and Status = 2
+  group by  p.AgentTerminalID)    as Count,
+
+5 as Agent ,
+'Yığım (Modenis)'  as ProviderName

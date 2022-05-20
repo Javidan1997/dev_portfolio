@@ -1,0 +1,6 @@
+SELECT id_operation ,id_service ,id_provider ,id_city ,id_point ,time_point ,time_server ,time_process, sum_income , sum_comm , sum_outcome , operation_number , time_provider, state ,substate 
+from operations.master m 
+where sum_income - (sum_outcome + sum_comm) > 0 --sum_income - (sum_outcome + sum_comm) > 1000 (without coins)
+and sum_outcome != 0 and state = 60 and substate = 0
+and 
+time_point between '2021-08-01' and '2021-09-01'

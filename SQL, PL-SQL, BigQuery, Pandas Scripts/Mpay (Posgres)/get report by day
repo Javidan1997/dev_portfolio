@@ -1,0 +1,12 @@
+select DATE(time_point) as day, Count(sum_income),SUM(sum_income)/100
+from operations.master 
+where time_point  BETWEEN '2021-07-01' AND '2021-10-01'
+and state = 60
+group by day 
+
+
+select DATE(time_point) as day, Count(sum_income),SUM(sum_income)/100
+from operations.master 
+where time_point  BETWEEN '2021-07-01' AND '2021-10-01'
+and state = 80
+group by day 

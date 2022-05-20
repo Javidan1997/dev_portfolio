@@ -1,0 +1,43 @@
+Bakcell araşdırma
+
+step 1)Main bazasından ləğvləri tapmaq üçün sorğu veririk(2 sorğudur)
+
+sorğu 1
+EXECUTE [dbo].[GetNewPayment]
+@Login = N'muzaffarlit'
+,@PasswordMD5 = N'c0c6ce4fe66c0ec733458a22042f056a'
+
+,@RevokeStatus=5
+
+,@Revoketimefrom='2021-02-01'
+,@revoketimeTo='2021-03-01'
+
+GO
+
+sorğu 2
+
+EXECUTE [dbo].[GetNewPayment]
+@Login = N'muzaffarlit'
+,@PasswordMD5 = N'c0c6ce4fe66c0ec733458a22042f056a'
+
+,@RevokeStatus=4
+
+,@Revoketimefrom='2021-02-01'
+,@revoketimeTo='2021-03-01'
+
+GO
+
+step 2) aşağıdakı columları seçirik
+PaymentID	PayValue	CreateTime	Number	NomenclatureName	RevokeValue
+
+step 3) aşağıdakı NomenclatureName "bakcell" sözü filtrasiya edilir .
+step 4) createtime-ı araşdırma ayıdırsa tam və ya natam ləğvdirge
+create time əvvəlki aydırsa gecikmiş ləğvdir
+
+step 5) payvalue- revokevalue = 0 tam ləğvdir != 0 natamam ləğvdir
+
+step 6) gecikmiş ləğvlər yekun məbləğdən çıxılır, natamam ləğv qalığı () toplanılır.
+
+
+
+

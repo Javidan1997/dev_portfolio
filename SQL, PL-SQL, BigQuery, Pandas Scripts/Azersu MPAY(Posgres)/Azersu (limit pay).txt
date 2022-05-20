@@ -1,0 +1,16 @@
+SELECT m.id_operation, 
+--id_provider, id_service,
+ account,  state,
+--substate, 
+time_point,
+--time_server, time_process, 
+ot.value as "minvalue"
+,m.sum_income 
+from operations.master m 
+join operation_attributes ot on ot.id_operation =m.id_operation 
+where id_service=797 
+and ot."name" ='min-amount'
+ AND time_point >= '2021-09-11'
+   and time_point < '2021-10-01'
+   and m.sum_income < cast(ot.value as decimal) *100
+   and m.sum_income >0

@@ -1,0 +1,11 @@
+				aktin tesdiqlenmesi
+step1 : akt excel file-de muvafiq ayda her bir  provider ucun yekun reqem goturulur ve outlook-da axtarilir ve providerin tesdiq edirem maili service.desk@modenis.az-e forward edilir
+step 2 : https://helpdesk/WOListView.do linke daxil olunur request/edit request edilir 
+Name: Nasimi Seyidov
+Technician : Ziyarat Mahmudzada
+last step is clicking upload request button
+step 4: task service-de request-e kecib hemin yaradilmish task-i secib edit request edirik
+CHANGE TEMPLATE-DEN AYLIQ UZLESME SECILIR 
+STEP 5: HEMIN REQUEST SECILIR VE ASSOCIATE EDILIR
+VE ASSOCIATE WINDOW-DA MUVAFIQ AYIN UZLESMESINE UYGUN TITLE SECILIR VE CLOSE EDILIR
+STEP 6: REQUEST OZU DE CLOSE EDILIR.

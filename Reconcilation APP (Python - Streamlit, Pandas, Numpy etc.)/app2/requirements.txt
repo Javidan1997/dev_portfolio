@@ -1,0 +1,7 @@
+streamlit
+pandas
+psycopg2
+numpy
+Pillow
+xlsxwriter
+click==8.0.4

@@ -1,0 +1,51 @@
+EXECUTE [dbo].[GetNewPayment]
+@Login = N'aqammadzadae'
+,@PasswordMD5 = N'c2caea1c32db0492a967feb3743fb168'
+--,@DealerID
+--,@ActDealerID
+--,@TransactionID=5917458355 
+--,@OuterTransactionID
+--,@PaymentID=310540015
+--,@PointID
+--,@UserID
+--,@ProviderID = 14
+--,@PayType
+--,@Code
+--,@RevokeStatus=5 -- 4, 5 
+--,@RetryStatus
+--,@Number='503428514'
+--,@PayTimeFrom
+--,@PayTimeTo
+,@CreateTimeFrom='2021-09-01'
+--,@Status=2
+,@ServiceID=2274  --2519,2252 --1069 1070 1090 1091 1094 1095 1099 1100 1107 1108
+--note
+--,@CreateTimeFrom='2021-09-01'
+--,@CreateTimeTo='2021-09-17'
+--,@RevokeTimeFrom = '2020-11-01'
+
+,@CreateTimeTo='2021-09-17'
+--,@RevokeTimeFrom = '2021-05-01'
+--,@RevokeTimeTo = '2021-06-01'
+
+--,@RefundedTimeFrom
+--,@RefundedTimeTo
+--,@RetryDateFrom
+--,@RetryDateTo
+--,@WithRevoke
+--,@WithRetry
+--,@IsRetried
+--,@IsRefunded
+--,@IsFirstInRetryChain
+--,@IsLastInRetryChain
+--,@IsConfirmed
+--,@PointType
+--,@PointAddressCode
+--,@IncludeExtras=1
+-- ,@NomenclatureID=3
+--,@IsFishing
+--,@Top=10
+--,@Debug
+GO
+
+--Service ID should be taken from Portal not from UPG

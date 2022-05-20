@@ -1,0 +1,4 @@
+select id_operation, ot.original_value as card_type from operation_attributes ot where id_operation in ('1010024564','1010249071')
+and ot."name" ='sc-card-type'
+
+--Change ot."name" to find values you need

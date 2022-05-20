@@ -1,0 +1,40 @@
+﻿@model CategoryViewModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Manage/Views/Shared/_Layout.cshtml";
+
+}
+
+<div class="container-fluid">
+
+    <a asp-action="create" class="btn btn-primary">Create</a>
+    <table class="table">
+        <thead>
+            <tr class="row">
+                <th scope="col" class="col-md-1">#</th>
+                <th scope="col" class="col-md-3">Name</th>
+                <th scope="col" class="col-md-3"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Categories)
+            {
+            <tr class="row">
+                <th scope="row" class="col-md-1"> </th>
+                <td class="col-md-3">@item.Name</td>
+
+
+
+
+                <td class="col-md-3">
+                    <a asp-action="edit" asp-route-id="@item.Id" class="btn btn-info">Edit</a>
+                    <a asp-action="delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+
+            }
+
+        </tbody>
+    </table>
+
+</div>

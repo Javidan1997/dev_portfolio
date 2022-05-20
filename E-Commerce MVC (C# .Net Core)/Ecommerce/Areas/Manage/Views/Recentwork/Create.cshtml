@@ -1,0 +1,58 @@
+﻿@model Tattoo
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Areas/Manage/Views/Shared/_Layout.cshtml";
+    List<Category> categories = ViewBag.Categories;
+}
+
+<h1>Create</h1>
+<div class="container-fluid">
+    <form method="post" enctype="multipart/form-data">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label asp-for="@Model.Name"></label>
+                <input class="form-control" asp-for="@Model.Name">
+                <span asp-validation-for="@Model.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="@Model.Desc"></label>
+                <input class="form-control" asp-for="@Model.Desc">
+                <span asp-validation-for="@Model.Desc" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="@Model."></label>
+                <input class="form-control" asp-for="@Model.Desc">
+                <span asp-validation-for="@Model.Desc" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label asp-for="@Model.CategoryId">Category</label>
+                <select asp-for="@Model.CategoryId" asp-items="@(new SelectList(categories,"Id","Name"))" class="form-control">
+                </select>
+            </div>
+        </div>
+
+
+        <div class="form-group col-md-4">
+            <label asp-for="@Model.File"></label>
+            <input accept="image/png,image/jpeg" asp-for="@Model.File" class="form-control" placeholder="Photo">
+            <span asp-validation-for="@Model.File" class="text-danger"></span>
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+</div>
+
+@section Scripts{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+    <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+    <script>
+        // Replace the <textarea id="editor1"> with a CKEditor 4
+        // instance, using default configuration.
+        CKEDITOR.replace('Desc');
+    </script>
+}

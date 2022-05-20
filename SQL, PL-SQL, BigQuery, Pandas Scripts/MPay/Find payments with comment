@@ -1,0 +1,8 @@
+SELECT m.id_operation,  id_provider, id_service, account,  state, substate, time_point, time_server, time_process, oc."comment" 
+from operations.master m 
+join public.operation_comments oc on oc.id_operation = m.id_operation  
+where id_service =1013
+and oc."comment" is not null
+ AND time_process >= '2021-10-01'
+   and time_process < '2021-11-04'
+   and state = 80

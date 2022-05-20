@@ -1,0 +1,116 @@
+				AZERIQAZ ITRON
+step1: ilk once azeriqaz emekdaslari file gonderir hansi ki .csv file basqa bir excel file kocurerek  data/text to column/ edirsen
+step2: hemin excel file-lar sql -e import olunur ve asagidaki sorgu ile union all edilerek vahid table-a kocurulur
+SELECT * INTO [march2021_recon].dbo.ItronAll FROM (
+SELECT * FROM ITRON1
+UNION ALL
+SELECT * FROM ITRON2
+UNION ALL
+SELECT * FROM ITRON3
+UNION ALL
+SELECT * FROM ITRON4
+UNION ALL
+SELECT * FROM ITRON5) A
+
+step3: itron modenis table elde etmek ucun asagidaki sorgu icra olunur 
+
+SELECT [ProviderDate] as PaymentCreateDate,
+  CAST([PayFields].query('data(fields/field3)') as nvarchar) CardNumber,
+    [AgentPaymentID] as AzerqazId, --CAST([PayFields].query('data(fields/field2)') as nvarchar) AzerqazId,--AgentPaymentID etdik cunki AzerqazID null olanlari var idi
+    Number as GPG,
+    [Status],
+    [PaySum] as PayValue,
+	ServiceID
+    INTO [march2021_recon].[dbo].ItronModenis
+FROM [gate211].[dbo].[Payment] with (nolock)
+where ServiceID in( 175 ,745 ) 
+and StatusDate Between '2021-03-01'and'2021-04-01'
+ and
+  CAST([ExtraParams].query('data(r/agt_id)') as nvarchar) <> '3'
+  
+ step4: Itron Modenis ile Itron Azeriqaz ferq arasdirmasi ucun asagidaki sorgu icra olunur
+ 
+ SELECT  count(*) as count, a.[tranzaksiya_id] trn,
+try_convert(numeric(38, 12),a.odeme_meblegi)  as amount ,
+m.payvalue mamount,m.[AzerqazId] mtrn,m.[Status] mstatus,
+CASE WHEN m.payvalue > 0 THEN 'MUSBET' ELSE 'MENFI' END mnf,m.[ServiceID] 
+
+from [march2021_recon].[dbo].[ItronModenis] m
+full join [march2021_recon].[dbo].itronall1 a
+on a.[tranzaksiya_id] = m.[AzerqazId]
+--and try_convert(numeric(38, 12),a.odeme_meblegi) = m.payvalue  
+WHERE  
+ --or 
+
+  (a.[tranzaksiya_id] is  null and m.[Status]=2) or m.[AzerqazId] is   null 
+ or (a.[tranzaksiya_id] is not null and m.[Status]!=2 and not exists 
+ (select * from [march2021_recon].[dbo].itronall c
+  where c.[tranzaksiya_id]=m.[AzerqazId] and m.[Status]=2))
+  
+group by a.[tranzaksiya_id],m.payvalue,m.[AzerqazId],a.odeme_meblegi,m.[Status] ,m.[ServiceID] 
+
+--having count(*)=1
+
+step5: Report hazirlamaq ucun yekun meblegi cixarmaq ucun ise asagidaki sorgular icra olunur
+
+  SELECT SUM([odeme_meblegi])
+      
+  FROM [march2021_recon].[dbo].[ItronAll1]
+
+
+  SELECT SUM(PAYVALUE)    
+  FROM [march2021_recon].[dbo].[ItronModenis]
+  WHERE [STATUS]='2'
+  
+  
+  
+				AZERIQAZ AGIS
+setp1.CREATE
+
+SELECT --top 120-- AzerQazDirect 
+OsmpProviderID,
+AgentPaymentID as AzeriQazID, ReceiveDate, Number, PaySum, Status
+  INTO   [10october2021_recon].[dbo].AgisM
+  FROM [gate211].[dbo].[Payment]  
+where
+  ServiceID = 275 and 
+  StatusDate Between '2021-10-01'and'2021-11-01'
+   and CAST([ExtraParams].query('data(r/agt_id)') as nvarchar) <> '3'
+ order by ProviderDate
+ 
+step3:
+SELECT  count(*), a.TRN,a.PUL,m.PaySum,m.AzeriQazID,m.Status,
+CASE WHEN m.PaySum > 0 THEN 'MUSBET' ELSE 'MENFI' 
+END from [7july2021_recon].[dbo].[AGIS_Modenis] m
+
+full join [7july2021_recon].[dbo].[AGIS_ALL] a
+on a.TRN =m.AzeriQazID
+and a.PUL = m.PaySum  
+WHERE  
+ --or 
+
+  (a.TRN is null and m.Status=2) or
+ m.AzeriQazID is  null 
+ or (a.TRN is not null and m.[Status]<>2 
+ and not exists 
+	(select * from [dbo].[AGIS_Modenis] c where c.AzeriQazID =m.AzeriQazID and c.[status]=2))
+  
+group by a.TRN,m.PaySum,m.AzeriQazID,a.PUL,m.Status 
+
+
+select trn,* from [7july2021_recon].dbo.AGIS_ALL a
+full join [7july2021_recon].[dbo].[AGIS_Modenis] m
+on m.AzeriQazID=a.TRN
+where m.AzeriQazID is null or a.TRN is null				
+				
+				
+				ZENNER AZERIQAZ
+STEP 1.
+select StatusDate as PaymentCreateDate,OsmpProviderID, p.ProviderPaymentIDString,
+AgentPaymentID as AzeriQazID, ReceiveDate, Number, PaySum, Status,ServiceID into [11november2021_recon].dbo.ZennerModenis
+	from gate211.dbo.Payment p where ServiceID in ( 992)
+and StatusDate Between '2021-11-01'and'2021-12-01'
+ and
+  CAST([ExtraParams].query('data(r/agt_id)') as nvarchar) <> '3' and status=2
+
+STEP 2.

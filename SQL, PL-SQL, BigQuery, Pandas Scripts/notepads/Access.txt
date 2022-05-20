@@ -1,0 +1,12 @@
+SELECT --top 1 
+CAST(ExtraParams.query('data(r/access_idnumber)') as nvarchar(MAX)) as access_idnumber,
+CAST(ExtraParams.query('data(r/Access_counter)') as nvarchar(MAX)) as Access_counter,
+AgentPaymentID,
+PaySum,statusdate,
+case status when 2 then 'success' else 'rejected' end status ,
+Case when CAST([ExtraParams].query('data(r/agt_id)') as nvarchar)='3'  then 'Test' else 
+CAST([ExtraParams].query('data(r/agt_id)') as nvarchar) end Agent
+,Number
+--* 
+into [7july2021_recon].dbo.accesssssssssss
+FROM gate211.dbo.Payment p 

@@ -1,0 +1,25 @@
+
+1. Create Payments for last 2 months 
+/****** Script for SelectTopNRows command from SSMS  ******/
+SELECT  *
+	  into [gate211].[dbo].[Payment]
+  FROM [gate211].[dbo].[PaymentOld]
+  where StatusDate > '2021-08-01' and  StatusDate < '2021-10-01'
+2. Use Indexes:
+
+create clustered index PK_Payment on [gate211].[dbo].[Payment](PaymentID)
+
+create nonclustered index IX_Payment_AgentID_AgentPaymentID on [gate211].[dbo].[Payment](AgentID, AgentPaymentID)
+create nonclustered index IX_Payment_Status on [gate211].[dbo].[Payment]([Status])
+create nonclustered index IX_Payment_ServiceID on [gate211].[dbo].[Payment](ServiceID)
+create nonclustered index IX_Payment_StatusDate on [gate211].[dbo].[Payment](StatusDate)
+create nonclustered index IX_Payment_ServiceID_StatusDate on [gate211].[dbo].[Payment](ServiceID, StatusDate)
+
+create nonclustered index IX_Payment_AgentPaymentID on [gate211].[dbo].[Payment](AgentPaymentID)
+
+3. Giving access to intranet:
+
+1.Enter to ModDevUpg server in Ms Sql
+2.Then go to Security/Logins/reportuser and right click select Properities
+3.in Properities go to User Mapping select gate 211 from above and db.owner from under 
+4. Click ok.

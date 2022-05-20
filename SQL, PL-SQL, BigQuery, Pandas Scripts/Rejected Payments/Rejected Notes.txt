@@ -1,0 +1,115 @@
+10.203.180.32\AZDB
+username mail
+
+
+RevokedPayments
+ -- ,@RevokeTimeFrom='uzlesme ayi bas'
+  --,@RevokeTimeTo='uzlesme ayi son'  
+Rejected status=2 @RevokeStatus=5  - natamam legvler
+və tam legvler - status=3 RevokeStatus=4 
+
+
+RevokedCurrentMonth
+ -- ,@CreateTimeTo "uzlesme ayina qeder"
+ -- ,@RevokeTimeFrom='uzlesme ayi bas'
+  --,@RevokeTimeTo='uzlesme ayi son'
+Rejected status=2 @RevokeStatus=5  - natamam legvler
+və tam legvler - status=3 RevokeStatus=4 	
+
+
+PartialPayments
+ -- ,@CreateTimeTo "uzlesme ayina sonuna qeder
+ -- ,@RevokeTimeFrom='uzlesme ayi bas'
+  --,@RevokeTimeTo='uzlesme ayi son'  
+Rejected status=2 @RevokeStatus=5  - natamam legvler
+
+
+RetryPayments
+ -- ,@CreateTimeTo='uzlesme ayina qeder'
+ -- ,@RetryDateFrom='uzlesme ayi bas'
+ -- ,@RetryDateTo='uzlesme ayi son'
+ -- ,@status=3
+ -- ,@WithRetry=1
+
+SuccessCurrentMonth
+ ,@CreateTimeTo='2021-04-01'
+  ,@RevokeTimeFrom='2021-04-01'
+  ,@RevokeTimeTo='2021-05-01' 
+  ,@Status=2
+  ,@RevokeStatus=3 --2 3 kecmis ay
+ 
+
+RejectedPayments(uğursuz odenislerin siyahisi)
+ @CreateTimeFrom = '2018-10-01'
+   ,@CreateTimeTo = '2018-11-01',
+   ,@Status=3
+   ,@RetryStatus=1
+
+Cixan neticeden RetriedCurrentMonth və SuccessCurrentMonth sheetlerindeki ödənişlər keçən ayın RejectedPayments sheetində varsa onları bu aydan silmək lazımdır
+
+Yekun sum = Convfee + Revoke value
+RetryStatusName kolumnda Sadece Ne preprevezdeniyani saxla.
+DealerName kolumnda Kassam.az ve  test olanlari sil getsin.
+
+Rejected paymentd Name column =  %OSMP_STATUS_WINDOWS_TERMINAL_OSMP% silmek lazimdir ama silmezden evvel  revokeda atilasi odenisdirmi ya yox deqiqlesdirmek lazimdir
+RevokeStatusName kolumndan %OSMP_STATUS_REV_SUCCESS% olanlari silib RevokedPayments sitine elave edirik.
+Uncompleted mebleg 0 olanlari leri silirik
+
+
+
+Bitdikden sonra payvalue 0 olanlari sil
+Retried da olan odenisler kecen ayin rejectedinde var mi? yoxsa sil
+
+
+ 
+
+ RevokedCurrentMonth(Evvelki ayin odenisleri current monthda qaytarilanlar)
+ ,@RevokeTimeFrom='2018-10-01'
+ ,@RevokeTimeTo='2018-11-01' 
+      ,@WithRevoke=1
+   ,@CreateTimeFrom = '2015-06-01'
+   ,@CreateTimeTo = '2018-10-01'
+
+sonda baxmaq lazimdir revoked current month kecen ay revokad payments de vermemeliyik     
+sonda baxmaq lazimdir revoked current month kecen ay revoked current month da vermemliyik  
+
+
+ 
+
+
+
+
+
+Burdan sonrasi, kohne qeydlerdir...
+
+
+  RetryPayments(Ay erzinde tekrar kecirilen evvelki aylarin odenisleri.)
+@CreateTimeFrom = '2015-06-01'
+   ,@CreateTimeTo = '2018-10-01' uzlesmeden 1 ay evvelki ay olmalidi cunki kecen ay deyirik
+ ,status=3
+   ,@WithRetry = 1
+	,@RetryDateFrom='2018-10-01'
+        ,@RetryDateTo='2018-11-01'
+Burada RetryTimeye bax bu ay olsun.
+Create time evvelki aylar olsun.
+
+
+Sonda alinan siyahini create olduğu ayda ugursuzlarda axtar,eyer vermisikse qalsin eks halda siyahidan çıxar. 
+
+   
+
+PartialPayments
+ @RevokeTimeFrom='2018-10-01'
+    ,@RevokeTimeTo='2018-11-01'  
+    ,@WithRevoke=1 
+     ,@CreateTimeTo = '2018-11-01'
+     ,@Status = 2
+
+
+PartialPaymentde
+ServiceValue ile revokedValueni muqaise edirik beraber oldugu halda baxiriq create timeye eger create time evvelki aylaradirsa bu halda odenisler successCurrentmonha gede biler bunun ucun baxiriq create oldugu ayda rejected kimi verilibmi ?verilibse successde vere bilirik eks halda siyahidan cixardiriq.
+ServiceValue ile revokedValueni muqaise edirik beraber olmadigi halda baxiriq create timesi evvelki aylardirsa bu halda odenisleri atiriq RevokedCurrentMontha eks halda RevokedPaymentsa.
+RevokedCurrentMontha odenislerinde EMDK-lari Tahir  veririk.
+
+
+revoked payments de  emdk dan basqa pc kassir odenislerini silirik

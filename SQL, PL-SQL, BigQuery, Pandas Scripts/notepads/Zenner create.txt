@@ -1,0 +1,106 @@
+							step1
+
+SELECT 
+	   [ID]
+      ,[Ad]
+      ,[Soyad]
+      ,[Ata Adı]
+      ,[Ünvan]
+      ,[SUBSCRIBER_ID]
+      ,[METER_ID]
+      ,[TOTAL_AMOUNT]
+      ,[DEBT_AMOUNT]
+      ,[CHARGED_AMOUNT]
+      ,[GAS_AMOUNT]
+      ,[CREATED_DATE]
+      ,[API_USER_ID]
+      ,[API_USER_NAME]
+      ,[API_PAYPOINT_TERMINAL_ID]
+      ,Left(ref_num,10)+RIGHT('0000000000'+CAST(ref_num as nvarchar),10) as [REF_NUM]
+      ,[Şəhər Adı]
+      ,[Rayon adı]
+      ,[sektor]
+	  into [8august2021_recon].[dbo].[ZennerA]
+  FROM [8august2021_recon].[dbo].[ZennerAll]
+  where LEN(REF_NUM)>20
+  
+					      step2 
+ 
+ delete from 
+   [8august2021_recon].[dbo].[ZennerAll]
+  where len(ref_num)>20
+  
+					     step3
+
+select *
+	into [8august2021_recon].dbo.ZENNERA  
+from (select * from [dbo].[ZennerAll]
+union all
+select * from [dbo].[ZENNERR]) t
+					    
+						
+						
+						ZENNER.sql
+
+select sum(m.paysum) from ZennerM m left join ZennerA a on m.trm_prv_id=a.REF_NUM where a.REF_NUM is not null
+ select sum(a.TOTAL_AMOUNT) from ZennerA a left join ZennerM m on m.trm_prv_id=a.REF_NUM where m.trm_prv_id is not null
+
+ select * from ZennerM m left join ZennerA a on m.trm_prv_id=a.REF_NUM where a.REF_NUM is  null
+ select * from ZennerA a left join ZennerM m on m.trm_prv_id=a.REF_NUM where m.trm_prv_id is  null
+
+select * from ZennerM where number=0189200035187
+
+
+select * from ZennerA where meter_id=0189200035187
+
+
+
+--select * from ZennerM where OsmpProviderID=18050
+
+
+--DELETE FROM ZennerM WHERE  OsmpProviderID=18050 and PaySum=0 ;
+select  sum(paysum) from ZennerM 
+select sum(TOTAL_AMOUNT)  from ZennerA 
+
+select * from zennera where total_amount<0
+ select sum(total_amount) from zennera
+ select sum(paysum) from zennerm
+
+SELECT  ref_num
+FROM zennera
+GROUP BY ref_num
+HAVING COUNT(ref_num) > 1;
+
+SELECT  trm_prv_id,number,paysum
+FROM zennerm
+GROUP BY trm_prv_id,number,paysum
+HAVING COUNT(trm_prv_id) > 1;
+
+Select * into [8august2021_recon].dbo.Zennerdiff 
+from (SELECT left ([REF_NUM], len([REF_NUM])-20)+
+right ([REF_NUM], len([REF_NUM]) -20)as reff,* from ZennerA 
+where len([REF_NUM])>20) t
+
+
+SELECT [REF_NUM],[METER_ID],[TOTAL_AMOUNT]
+FROM [dbo].[ZennerA]
+GROUP BY [REF_NUM],[METER_ID],[TOTAL_AMOUNT]
+HAVING COUNT([REF_NUM]) > 1;
+
+SELECT left ([REF_NUM], len([REF_NUM])-20)+
+right ([REF_NUM], len([REF_NUM]) -20) from ZennerA where len([REF_NUM])>20;
+
+
+UPDATE ZennerM
+SET trm_prv_id = left ([trm_prv_id], len([trm_prv_id]) -20)+
+right ([trm_prv_id], len([trm_prv_id]) -20) 
+where len([trm_prv_id])>20 ;
+
+
+SELECT left (REF_NUM, len(REF_NUM) -20)+
+right (REF_NUM, len(REF_NUM) -20) from ZennerA where len(REF_NUM)>20;
+
+
+select REF_NUM from zennera where len(REF_NUM)>20; 
+  
+  

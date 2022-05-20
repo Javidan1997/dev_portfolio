@@ -1,0 +1,32 @@
+
+select * from zennera where total_amount<0
+
+
+ select sum(total_amount) from zennera
+ select sum(paysum) from zennerm
+
+ SELECT  ref_num
+FROM Zenner_All
+GROUP BY ref_num
+HAVING COUNT(ref_num) > 1;
+
+ SELECT  trm_prv_id,number,paysum
+FROM zennerm
+GROUP BY trm_prv_id,number,paysum
+HAVING COUNT(trm_prv_id) > 1;
+
+SELECT left ([trm_prv_id], len([trm_prv_id]) -20)+
+right ([trm_prv_id], len([trm_prv_id]) -20) from ZennerM where len([trm_prv_id])>20;
+
+
+UPDATE Zenner_All
+SET REF_NUM = left (REF_NUM, len(REF_NUM) -14)+
+right (REF_NUM, len(REF_NUM) -14) 
+where len(REF_NUM)>20 ;
+
+
+SELECT left (REF_NUM, len(REF_NUM) -14)+
+right (REF_NUM, len(REF_NUM) -14) from Zenner_All where len(REF_NUM)>20;
+
+
+select REF_NUM from Zenner_All where len(REF_NUM)>20;

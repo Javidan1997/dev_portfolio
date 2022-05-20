@@ -1,0 +1,39 @@
+﻿@model ActivityofmonthViewModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Manage/Views/Shared/_Layout.cshtml";
+
+    int counter = 1;
+}
+
+<div class="container-fluid">
+
+    <a asp-action="create" class="btn btn-primary">Create</a>
+    <table class="table">
+        <thead>
+            <tr class="row">
+                <th scope="col" class="col-md-1">#</th>
+                <th scope="col" class="col-md-3">Name</th>
+                <th scope="col" class="col-md-2">Desc</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Activityofmonths)
+            {
+                <tr class="row">
+                    <th scope="row" class="col-md-1">@counter</th>
+                    <td class="col-md-2">@item.Name</td>
+                    <td class="col-md-4">@item.Desc</td>
+                    <td class="col-md-4">
+                        <a asp-action="edit" asp-route-id="@item.Id" class="btn btn-info">Edit</a>
+                        <a asp-action="delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+
+                counter++;
+            }
+
+        </tbody>
+    </table>
+
+</div>
