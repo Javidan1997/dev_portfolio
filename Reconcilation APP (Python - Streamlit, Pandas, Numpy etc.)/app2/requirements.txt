@@ -5,3 +5,7 @@ numpy
 Pillow
 xlsxwriter
 click==8.0.4
+openpyxl
+typing-extensions
+xlrd
+pretty_html_table
