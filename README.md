@@ -1,6 +1,6 @@
-# dev_portfolio
-Dear Ms/Mr, Hear you can find my portfolio where I used different range of programming languages and tools. Enjoy :)
-        World of Commissions - Automated Commission Calculator
+
+**Dear Ms/Mr, Hear you can find my portfolio where I used different range of programming languages and tools. Enjoy :)**
+         **World of Commissions - Automated Commission Calculator**
 - **Automation of Commission Processes:** Effortlessly approve,
 send, and generate commission statements with automated workflows.
 Implement rule-based commission calculations and approval workflows
@@ -36,7 +36,7 @@ strategies for maximum impact.
 ![image](https://github.com/Javidan1997/dev_portfolio/assets/75013734/53a92774-30f1-4366-ae96-8fef10fd2c0f)
 ![image](https://github.com/Javidan1997/dev_portfolio/assets/75013734/00704fa9-ba10-404d-b2e3-6d101ca817ce)
 ![image](https://github.com/Javidan1997/dev_portfolio/assets/75013734/f875ad11-d75e-4fb1-9c70-05590934737e)
-              Data Governance BI Tool
+              **Data Governance BI Tool**
 - **Comprehensive Data Mapping:** Map and analyze diverse datasets
 to uncover insights and drive informed decision-making. Utilize
 advanced data mapping techniques to visualize data relationships,
@@ -66,7 +66,7 @@ collaboratively and transparently.
 ![image](https://github.com/Javidan1997/dev_portfolio/assets/75013734/6fff147e-0ba3-49a1-8ec9-f3201dbfd4ca)
 ![image](https://github.com/Javidan1997/dev_portfolio/assets/75013734/a274a0b1-73c6-4fbe-a15d-359beedeba24)
 ![image](https://github.com/Javidan1997/dev_portfolio/assets/75013734/3999e16a-1405-49bf-ada0-874299d0552e)
-          Apache Airflow - Automated Scheduled Reports and ETL Processes
+        **Apache Airflow - Automated Scheduled Reports and ETL Processes**
   - **Workflow Orchestration:** Orchestrate complex ETL processes and
 report scheduling with the intuitive Directed Acyclic Graph (DAG)
 paradigm. Define workflow dependencies, task dependencies, and
@@ -94,7 +94,7 @@ Airflow with data warehouses, cloud storage platforms, analytics
 tools, and orchestration frameworks, ensuring interoperability and
 extensibility.
 ![image](https://github.com/Javidan1997/dev_portfolio/assets/75013734/b37c5b97-da11-40b6-9fef-9fc7cdc20b0b)
-      Reconciliation App - Finance Application for Discrepancy Resolution
+      **Reconciliation App - Finance Application for Discrepancy Resolution**
 **Discrepancy Calculation:** Calculate differences between vendors
 and reconcile discrepancies efficiently. Implement automated
 reconciliation algorithms, matching logic, and exception handling
@@ -124,7 +124,7 @@ transparency.
 ![image](https://github.com/Javidan1997/dev_portfolio/assets/75013734/af7b767c-bc53-4f49-ba59-85e7be9e1a5d)
 ![image](https://github.com/Javidan1997/dev_portfolio/assets/75013734/c3d88aaf-e71e-47b6-a992-d26c2be8876d)
 ![image](https://github.com/Javidan1997/dev_portfolio/assets/75013734/3228fea1-49af-4a16-8cb7-a4bd3e743b9c)
-      Business to Business BI Interface - Self Service Business Intelligence Tool
+      **Business to Business BI Interface - Self Service Business Intelligence Tool**
   - **Extensive Filtering Functionality:** Utilize over 40 filters and
 options to refine analyses and extract relevant insights. From sales
 performance to supply chain metrics, users can filter data based on
@@ -164,7 +164,7 @@ develop proactive strategies.
 ![image](https://github.com/Javidan1997/dev_portfolio/assets/75013734/cfa35ada-1309-465d-9315-d28d7d0c6beb)
 ![image](https://github.com/Javidan1997/dev_portfolio/assets/75013734/67b4e430-236f-4991-8fb8-43ea7956d834)
 ![image](https://github.com/Javidan1997/dev_portfolio/assets/75013734/49390b1e-438a-42f7-9a6e-605910243e0d)
-      Business to Customer BI Interface - Self Service Business Intelligence Tool
+      **Business to Customer BI Interface - Self Service Business Intelligence Tool**
 - **Advanced Filtering Options:** Access over 40 meticulously
 crafted filters allowing users to refine their data queries with
 precision. Filter options include demographic details, transactional
@@ -200,10 +200,10 @@ and product performance.
 ![image](https://github.com/Javidan1997/dev_portfolio/assets/75013734/b4f7ceb1-6c02-4b53-afe9-73729bcc6443)
 ![image](https://github.com/Javidan1997/dev_portfolio/assets/75013734/864554a1-8638-4c25-a166-db51a0c2be72)
 
-Furthermore, in addition to these robust functionalities, our suite of applications also includes automated Telegram and WhatsApp
+**Furthermore, in addition to these robust functionalities, our suite of applications also includes automated Telegram and WhatsApp
 bots, along with other automated web and desktop applications. These offerings collectively provide a comprehensive ecosystem for
 data-driven decision-making, process optimization, and streamlined communication, ensuring efficiency and effectiveness across all
-facets of your business operations.
+facets of your business operations.**
 
 
 
